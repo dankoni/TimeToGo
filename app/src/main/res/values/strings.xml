@@ -13,4 +13,9 @@
     <string name="geofence_too_many_pending_intents">
         You have provided too many PendingIntents to the addGeofences() call.
     </string>
+    <string name="permission_rationale_location">
+        <![CDATA[Access to the location service is required to demonstrate the \\\'my location\\\' feature, which shows your current location on the map.</string>]]></string>
+    <string name="location_permission_denied">
+        <![CDATA[This sample requires location permission to enable the \\\'my location\\\' layer. Please try again and grant access to use the location.\\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \\\'Google Maps API Demos\\\'.]]></string>
+    <string name="ok">ok</string>
 </resources>
