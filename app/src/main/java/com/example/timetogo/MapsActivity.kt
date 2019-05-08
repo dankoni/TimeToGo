@@ -2,16 +2,23 @@ package com.example.timetogo
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.content.Intent
+import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import com.example.timetogo.geofence.GeofenceTransitionsIntentService
+import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -23,10 +30,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
 
 
     private var showPermissionDeniedDialog: Boolean  = false
-    val SYDNEY = LatLng(-33.862, 151.21)
-    val ZOOM_LEVEL = 13f
+    var geoFenceList : List<Geofence> = ArrayList()
+
     lateinit var geofencingClient: GeofencingClient
     lateinit var map: GoogleMap
+
+    private val geofencePendingIntent: PendingIntent by lazy {
+        val intent = Intent(this, GeofenceTransitionsIntentService::class.java)
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+        // addGeofences() and removeGeofences().
+        PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,10 +61,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         map = googleMap
 
         enableMyLocation()
-        /*with(map) {
-            moveCamera(CameraUpdateFactory.newLatLngZoom(SYDNEY, ZOOM_LEVEL))
-            addMarker(MarkerOptions().position(SYDNEY))
-        }*/
 
         map.setOnMyLocationButtonClickListener(this)
         map.setOnMyLocationClickListener(this)
@@ -88,6 +98,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         }
     }
 
+
+    private fun getGeofencingRequest(): GeofencingRequest {
+        return GeofencingRequest.Builder().apply {
+            setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            addGeofences(geoFenceList)
+        }.build()
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -96,9 +114,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode,
             permissions, grantResults, this)
+
     }
 
-    override fun onMyLocationClick(p0: Location) {
+    override fun onMyLocationClick(location: Location) {
+
+        val geofence = Geofence.Builder()
+            .setRequestId("work")
+            .setCircularRegion(location.latitude,location.longitude,150.0f)
+            .setExpirationDuration(20000)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+            .setLoiteringDelay(2000)
+            .build()
+
+        geoFenceList = listOf(geofence)
+
+        addGeofenceMarker(location)
+    }
+
+    private fun addGeofenceMarker(location:Location) {
+        val latLng = LatLng(location.latitude,location.longitude)
+        map.addMarker(MarkerOptions().position(latLng).title("Work"))
+
+        val fenceCircle = CircleOptions().center(latLng).radius(150.0).fillColor(0x40ff0000).strokeColor(Color.TRANSPARENT).strokeWidth(2f)
+        map.addCircle(fenceCircle)
     }
 
     override fun onMyLocationButtonClick(): Boolean {
