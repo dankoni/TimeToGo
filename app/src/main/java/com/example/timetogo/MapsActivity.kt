@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.example.timetogo.geofence.GeofenceTransitionsIntentService
 import com.google.android.gms.location.Geofence
@@ -27,6 +28,7 @@ import pub.devrel.easypermissions.EasyPermissions
 private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, EasyPermissions.PermissionCallbacks  {
+    val TAG = "MapActivity"
 
 
     private var showPermissionDeniedDialog: Boolean  = false
@@ -37,8 +39,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(this, GeofenceTransitionsIntentService::class.java)
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-        // addGeofences() and removeGeofences().
         PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         geofencingClient = LocationServices.getGeofencingClient(this)
-
 
         val mapFragment : SupportMapFragment? =
             supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
@@ -117,19 +116,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
 
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMyLocationClick(location: Location) {
 
         val geofence = Geofence.Builder()
             .setRequestId("work")
             .setCircularRegion(location.latitude,location.longitude,150.0f)
             .setExpirationDuration(20000)
-            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
             .setLoiteringDelay(2000)
             .build()
 
         geoFenceList = listOf(geofence)
 
         addGeofenceMarker(location)
+        geofencingClient?.addGeofences(getGeofencingRequest(), geofencePendingIntent)?.run {
+            addOnSuccessListener {
+                // Geofences added
+                // ...
+
+                Log.e(TAG, "Event recived :succes")
+
+            }
+            addOnFailureListener {
+                // Failed to add geofences
+                // ...
+
+                Log.e(TAG, "Event recived : fail")
+
+            }
+        }
     }
 
     private fun addGeofenceMarker(location:Location) {

@@ -6,6 +6,10 @@ import android.util.Log
 import com.example.timetogo.R
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
+import android.provider.CalendarContract.Events
+import android.provider.CalendarContract
+import java.util.*
+
 
 class GeofenceTransitionsIntentService : IntentService("GeoCalendarService") {
 
@@ -14,6 +18,10 @@ class GeofenceTransitionsIntentService : IntentService("GeoCalendarService") {
     override fun onHandleIntent(intent: Intent?) {
 
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
+
+        Log.e(TAG, "Event recived : ${geofencingEvent.geofenceTransition}")
+
+
         if (geofencingEvent.hasError()) {
             val errorMessage = GeofenceErrorMessages.getErrorString(this,
                 geofencingEvent.errorCode)
@@ -24,28 +32,38 @@ class GeofenceTransitionsIntentService : IntentService("GeoCalendarService") {
         // Get the transition type.
         val geofenceTransition = geofencingEvent.geofenceTransition
 
-        /*  // Test that the reported transition was of interest.
-          if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER |
-          geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+          // Test that the reported transition was of interest.
+          if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
 
               val triggeringGeofences = geofencingEvent.triggeringGeofences
 
-              // Get the transition details as a String.
-              val geofenceTransitionDetails = getGeofenceTransitionDetails(
-                  this,
-                  geofenceTransition,
-                  triggeringGeofences
-              )
 
               // Send notification and log the transition details.
-              sendNotification(geofenceTransitionDetails)
-              Log.i(TAG, geofenceTransitionDetails)
+              addEventToCalendar()
           } else {
-              // Log the error.
-              Log.e(TAG, getString(
-                  R.string.geofence_transition_invalid_type,
-                  geofenceTransition))
-          }*/
+            // Log the error.
+
+        }
+    }
+
+    private fun addEventToCalendar() {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.HOUR,8)
+        calendar.add(Calendar.MINUTE, 30)
+
+        val endtime = calendar
+        endtime.add(Calendar.MINUTE, 30)
+        val intent = Intent(Intent.ACTION_INSERT)
+            .setData(Events.CONTENT_URI)
+            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar)
+            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endtime)
+            .putExtra(Events.TITLE, "Go Home")
+            .putExtra(Events.EVENT_LOCATION, "The wokr")
+            .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplication().startActivity(intent);
+
     }
 }
 
