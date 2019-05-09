@@ -36,6 +36,12 @@ dependencies {
     // EasyPermissions is needed to help us request for permission to access location
     implementation 'pub.devrel:easypermissions:1.1.1'
 
+    // KOIN
+    implementation Libraries.koin
+    implementation Libraries.koinViewModel
+
+    implementation KotlinLibraries.kotlin
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'

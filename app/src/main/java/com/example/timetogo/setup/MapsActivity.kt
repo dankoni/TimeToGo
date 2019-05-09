@@ -1,4 +1,4 @@
-package com.example.timetogo
+package com.example.timetogo.setup
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,12 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import com.example.timetogo.R
 import com.example.timetogo.geofence.GeofenceTransitionsIntentService
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
