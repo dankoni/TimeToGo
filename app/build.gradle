@@ -4,6 +4,9 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -46,6 +49,12 @@ dependencies {
     implementation AndroidLibraries.lifecycleViewModel
     implementation AndroidLibraries.lifecycleExtensions
 
+    // ROOM
+    annotationProcessor Libraries.roomCompiler
+    kapt Libraries.roomCompiler
+
+    implementation Libraries.roomRunTime
+    implementation Libraries.roomKtx
 
     implementation 'com.google.android.material:material:1.0.0'
     testImplementation 'junit:junit:4.12'

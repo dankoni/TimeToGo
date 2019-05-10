@@ -39,34 +39,18 @@ class GeofenceTransitionsIntentService : IntentService("GeoCalendarService") {
               val triggeringGeofences = geofencingEvent.triggeringGeofences
 
 
-              // Send notification and log the transition details.
-              addEventToCalendar()
+              setTrigger()
           } else {
             // Log the error.
 
         }
     }
 
-    private fun addEventToCalendar() {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.HOUR,8)
+    private fun setTrigger() {
 
-        val starttime = calendar
-        starttime.add(Calendar.HOUR,8)
-
-        val endtime = starttime
-        endtime.add(Calendar.MINUTE, 30)
-        val intent = Intent(Intent.ACTION_INSERT)
-            .setData(Events.CONTENT_URI)
-            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, starttime)
-            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endtime)
-            .putExtra(Events.TITLE, "Go Home")
-            .putExtra(Events.EVENT_LOCATION, "The wokr")
-            .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent)
 
     }
+
+
 }
 

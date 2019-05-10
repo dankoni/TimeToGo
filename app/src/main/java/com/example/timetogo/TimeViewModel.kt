@@ -17,7 +17,7 @@ class TimeViewModel : ViewModel() {
 
     val geofenceIsAdded = MutableLiveData<Boolean>()
 
-    lateinit var map:GoogleMap
+    lateinit var map: GoogleMap
 
     var isFirstLanched = false
 
@@ -27,32 +27,29 @@ class TimeViewModel : ViewModel() {
     }
 
     @SuppressLint("MissingPermission")
-    fun setGeofence(location:Location, context: Context) {
-       val  geoFenceData = GeofenceData(location,context)
+    fun setGeofence(location: Location, context: Context) {
+        val geoFenceData = GeofenceData(location, context)
 
         val geofencingClient = LocationServices.getGeofencingClient(context)
 
         geofencingClient?.addGeofences(geoFenceData.geoFenceRequest, geoFenceData.geoFencePendingIntent)?.run {
             addOnSuccessListener {
-                // Geofences added
-                // ...
-
-              //  Log.e(TAG, "Event recived :succes")
-
+                isFirstLanched = true
+                geofenceIsAdded.postValue(true)
             }
             addOnFailureListener {
-                // Failed to add geofences
-                // ...
+                isFirstLanched = false
+                geofenceIsAdded.postValue(false)
             }
         }
     }
 
-    fun whenMapIsReady(googleMap: GoogleMap){
+    fun whenMapIsReady(googleMap: GoogleMap) {
         map = googleMap
     }
-    fun drawMarker(location: Location){
-        val mapData = MapData(location,map)
+
+    fun drawMarker(location: Location) {
+        val mapData = MapData(location, map)
         mapData.addGeofenceMarker()
     }
-
 }

@@ -2,12 +2,15 @@ package com.example.timetogo.setup
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.timetogo.R
+import com.example.timetogo.TimeActivity
 import com.example.timetogo.TimeViewModel
 import com.example.timetogo.geofence.MapData
 import com.google.android.gms.location.GeofencingClient
@@ -31,12 +34,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(TimeViewModel::class.java)
 
+        viewModel.isGeofenceAdded().observe(this, Observer<Boolean> { whenGeoFenceIsAdded() })
+
         setContentView(R.layout.activity_main)
 
         val mapFragment : SupportMapFragment? =
             supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
+    }
+
+    private fun whenGeoFenceIsAdded() {
+           val intent = Intent(this, TimeActivity::class.java)
+           startActivity(intent)
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
