@@ -8,6 +8,7 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import android.provider.CalendarContract.Events
 import android.provider.CalendarContract
+import com.example.timetogo.TimeActivity
 import java.util.*
 
 
@@ -49,20 +50,22 @@ class GeofenceTransitionsIntentService : IntentService("GeoCalendarService") {
     private fun addEventToCalendar() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.HOUR,8)
-        calendar.add(Calendar.MINUTE, 30)
 
-        val endtime = calendar
+        val starttime = calendar
+        starttime.add(Calendar.HOUR,8)
+
+        val endtime = starttime
         endtime.add(Calendar.MINUTE, 30)
         val intent = Intent(Intent.ACTION_INSERT)
             .setData(Events.CONTENT_URI)
-            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, calendar)
+            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, starttime)
             .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endtime)
             .putExtra(Events.TITLE, "Go Home")
             .putExtra(Events.EVENT_LOCATION, "The wokr")
             .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
 
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplication().startActivity(intent);
+        startActivity(intent)
 
     }
 }

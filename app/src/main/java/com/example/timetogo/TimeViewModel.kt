@@ -15,7 +15,16 @@ import com.google.android.gms.maps.GoogleMap
 
 class TimeViewModel : ViewModel() {
 
+    val geofenceIsAdded = MutableLiveData<Boolean>()
+
     lateinit var map:GoogleMap
+
+    var isFirstLanched = false
+
+
+    fun isGeofenceAdded(): LiveData<Boolean> {
+        return geofenceIsAdded
+    }
 
     @SuppressLint("MissingPermission")
     fun setGeofence(location:Location, context: Context) {

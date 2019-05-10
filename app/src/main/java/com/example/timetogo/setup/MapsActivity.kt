@@ -20,7 +20,7 @@ import pub.devrel.easypermissions.EasyPermissions
 
 private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, EasyPermissions.PermissionCallbacks  {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, EasyPermissions.PermissionCallbacks  {
     private lateinit var viewModel: TimeViewModel
     val TAG = "MapActivity"
 
