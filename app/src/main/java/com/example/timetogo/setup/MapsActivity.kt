@@ -3,6 +3,7 @@ package com.example.timetogo.setup
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,12 +13,15 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.timetogo.R
 import com.example.timetogo.TimeActivity
 import com.example.timetogo.TimeViewModel
+import com.example.timetogo.data.AppConfig
+import com.example.timetogo.data.AppConfigDao
 import com.example.timetogo.geofence.MapData
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import org.koin.android.ext.android.inject
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -28,6 +32,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     val TAG = "MapActivity"
 
     private var showPermissionDeniedDialog: Boolean  = false
+
+    private val appConfig : SharedPreferences by inject()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +51,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     }
 
     private fun whenGeoFenceIsAdded() {
+           appConfig.edit().putBoolean("isFirstLaunch",false)
            val intent = Intent(this, TimeActivity::class.java)
            startActivity(intent)
     }
