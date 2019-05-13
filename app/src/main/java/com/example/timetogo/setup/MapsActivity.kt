@@ -51,7 +51,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     }
 
     private fun whenGeoFenceIsAdded() {
-           appConfig.edit().putBoolean("isFirstLaunch",false)
+           appConfig.edit().putBoolean("isFirstLaunch",false).commit()
            val intent = Intent(this, TimeActivity::class.java)
            startActivity(intent)
     }
