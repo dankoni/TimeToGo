@@ -29,7 +29,7 @@ object Versions {
     val gson = "2.8.5"
     val okHttp = "3.12.1"
     val coroutines = "1.1.1"
-    val koin = "1.0.2"
+    val koin = "2.0.0-beta-4"
     val timber = "4.7.1"
     val lifecycle = "2.1.0-alpha04"
     val nav = "2.0.0"
@@ -46,6 +46,8 @@ object Versions {
     val RxAndroidVersion = "2.0.1"
     val RxJavaVersion = "2.1.3"
     val rxCallAdapter = "2.5.0"
+
+    val easypermissions = "3.0.0"
 }
 
 
@@ -77,6 +79,8 @@ object Libraries {
     // KOIN
     val koin = "org.koin:koin-android:${Versions.koin}"
     val koinViewModel = "org.koin:koin-android-viewmodel:${Versions.koin}"
+
+    val easypermissions = "pub.devrel:easypermissions:${Versions.easypermissions}"
 
     // ROOM
     val roomCompiler = "androidx.room:room-compiler:${Versions.room}"

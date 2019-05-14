@@ -2,6 +2,7 @@ package com.example.timetogo
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -13,13 +14,12 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 
-class TimeViewModel : ViewModel() {
+class TimeViewModel (val appConfig: SharedPreferences): ViewModel() {
 
     val geofenceIsAdded = MutableLiveData<Boolean>()
 
     lateinit var map: GoogleMap
 
-    var isFirstLanched = false
 
 
     fun isGeofenceAdded(): LiveData<Boolean> {
@@ -34,11 +34,10 @@ class TimeViewModel : ViewModel() {
 
         geofencingClient?.addGeofences(geoFenceData.geoFenceRequest, geoFenceData.geoFencePendingIntent)?.run {
             addOnSuccessListener {
-                isFirstLanched = true
+                appConfig.edit().putBoolean("isFirstLaunch",false).commit()
                 geofenceIsAdded.postValue(true)
             }
             addOnFailureListener {
-                isFirstLanched = false
                 geofenceIsAdded.postValue(false)
             }
         }

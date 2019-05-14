@@ -9,36 +9,32 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.example.timetogo.R
 import com.example.timetogo.TimeActivity
 import com.example.timetogo.TimeViewModel
-import com.example.timetogo.data.AppConfig
-import com.example.timetogo.data.AppConfigDao
-import com.example.timetogo.geofence.MapData
-import com.google.android.gms.location.GeofencingClient
-import com.google.android.gms.location.LocationServices
+
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 
 private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, EasyPermissions.PermissionCallbacks  {
-    private lateinit var viewModel: TimeViewModel
     val TAG = "MapActivity"
 
     private var showPermissionDeniedDialog: Boolean  = false
 
     private val appConfig : SharedPreferences by inject()
+    val viewModel: TimeViewModel by viewModel()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TimeViewModel::class.java)
 
         viewModel.isGeofenceAdded().observe(this, Observer<Boolean> { whenGeoFenceIsAdded() })
 
@@ -51,7 +47,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
     }
 
     private fun whenGeoFenceIsAdded() {
-           appConfig.edit().putBoolean("isFirstLaunch",false).commit()
            val intent = Intent(this, TimeActivity::class.java)
            startActivity(intent)
     }

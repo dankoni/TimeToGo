@@ -18,7 +18,6 @@ class TimeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var viewModel = ViewModelProviders.of(this).get(TimeViewModel::class.java)
 
         setContentView(R.layout.activity_time)
         setSupportActionBar(toolbar)
