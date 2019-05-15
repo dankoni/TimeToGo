@@ -2,6 +2,7 @@ package com.example.timetogo.setup
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
@@ -48,8 +49,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLoca
 
     private fun whenGeoFenceIsAdded() {
            val intent = Intent(this, TimeActivity::class.java)
+           setResult(Activity.RESULT_OK,intent)
            startActivity(intent)
     }
+
+
 
     override fun onMapReady(googleMap: GoogleMap?) {
         googleMap ?: return

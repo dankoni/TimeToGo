@@ -1,5 +1,6 @@
 package com.example.timetogo
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -16,6 +17,7 @@ import java.util.*
 
 class TimeActivity : AppCompatActivity() {
 
+    private val loactionRequestCode = 201
     private lateinit var deapartureTextView: TextView
 
     private val appConfig : SharedPreferences by inject()
@@ -28,15 +30,27 @@ class TimeActivity : AppCompatActivity() {
 
         if(appConfig.getBoolean("isFirstLaunch",true)){
             val intent = Intent(this, MapsActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent,loactionRequestCode)
         }
 
         deapartureTextView = findViewById(R.id.departure_time)
 
-        val date = Calendar.getInstance().get(Calendar.HOUR)
-        //deapartureTextView.setText("Depaerture time: " )
 
+        val date = Calendar.getInstance().get(Calendar.HOUR).plus(8)
+        deapartureTextView.setText("Depaerture time: ${date}")
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val date = Calendar.getInstance().get(Calendar.HOUR).plus(8)
+        deapartureTextView.setText("Depaerture time: ${date}")
+
+        if(resultCode == Activity.RESULT_OK){
+            val date = Calendar.getInstance().get(Calendar.HOUR).plus(8)
+            deapartureTextView.setText("Depaerture time: ${date}")
+        }
+    }
+
+
 
 
 
